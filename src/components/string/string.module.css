@@ -1,0 +1,14 @@
+.form__box {
+    display: flex;
+    width: 567px;
+    margin: auto;
+    gap: 12px;
+}
+
+.circles__box {
+    display: flex;
+    margin-top: 120px;
+    gap: 12px;
+    width: 100%;
+    justify-content: center;
+}
