@@ -1,4 +1,4 @@
-import React, { useState, ChangeEventHandler, FormEventHandler } from "react";
+import React, { useState, ChangeEventHandler, FormEventHandler, useEffect } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
@@ -8,13 +8,16 @@ import { DELAY_IN_MS } from "../../constants/delays";
 import styles from "./string.module.css";
 
 interface ICircle {
-  color: ElementStates,
-  letter: string
+  color: ElementStates;
+  letter: string;
 }
 
 export const StringComponent: React.FC = () => {
   const [inputText, changeInputText] = useState("");
   const [result, setResult] = useState<ICircle[]>();
+  const [isLoader, setIsLoader] = useState<boolean>(false);
+  const [buttonDisabled, setButtonDisabled] = useState(false)
+
 
   const stringReverse = (text: string) => {
     let obj = text.split("").map((item) => {
@@ -43,6 +46,9 @@ export const StringComponent: React.FC = () => {
         }, DELAY_IN_MS * i);
       })();
     }
+    setTimeout(() => {
+      setIsLoader(false);
+    }, DELAY_IN_MS * (obj.length / 2));
   };
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (evt) => {
@@ -50,14 +56,23 @@ export const StringComponent: React.FC = () => {
   };
   const onSubmit: FormEventHandler<HTMLFormElement> = (evt) => {
     evt.preventDefault();
+    setIsLoader(true);
     stringReverse(inputText);
   };
+
+  useEffect(() => {
+    if (inputText.length < 1) {
+      setButtonDisabled(true)
+    } else {
+      setButtonDisabled(false)
+    }
+  }, [inputText])
 
   return (
     <SolutionLayout title="Строка">
       <form className={styles.form__box} onSubmit={onSubmit}>
         <Input maxLength={11} isLimitText={true} onChange={onChange} />
-        <Button text="Развернуть" type="submit" />
+        <Button text="Развернуть" type="submit" isLoader={isLoader} disabled={buttonDisabled}/>
       </form>
       <div className={styles.circles__box}>
         {result &&
