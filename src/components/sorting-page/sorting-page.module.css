@@ -1,0 +1,33 @@
+
+.box {
+    display: flex;
+    width: 980px;
+    margin: auto;
+    align-items: center;
+}
+
+.buttons__box {
+    display: flex;
+    margin-right: 80px;
+    gap: 12px;
+}
+
+.form__box {
+    display: flex;
+    width: 221px;
+    gap: 40px;
+    margin-right: 52px;
+}
+
+.button {
+    width: 205px;
+}
+
+.column__box {
+    display: flex;
+    gap: 10px;
+    margin-top: 48px;
+    align-items: flex-end;
+    justify-content: center;
+    height: 340px;
+}
