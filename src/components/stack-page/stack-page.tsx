@@ -72,11 +72,9 @@ export const StackPage: React.FC = () => {
 
   useEffect(() => {
     if (result.length < 1) {
-      console.log(result);
       setDeleteButton({ isLoader: false, disabled: true });
       setClearButton({ isLoader: false, disabled: true });
     } else {
-      console.log(result);
       setDeleteButton({ isLoader: false, disabled: false });
       setClearButton({ isLoader: false, disabled: false });
     }
@@ -84,11 +82,8 @@ export const StackPage: React.FC = () => {
 
   useEffect(() => {
     if (!inputText) {
-      console.log(inputText);
       setAddButton({ isLoader: false, disabled: true });
     } else {
-      console.log(inputText);
-
       setAddButton({ isLoader: false, disabled: false });
     }
   }, [inputText]);
