@@ -15,7 +15,9 @@ import { ElementStates } from "../../types/element-states";
 export const QueuePage: React.FC = () => {
   const [inputText, changeInputText] = useState("");
   const [result, setResult] = useState<any[]>(Array(7).fill(null));
-  const [color, setColor] = useState<any>(Array(7).fill(ElementStates.Default));
+  const [color, setColor] = useState<ElementStates[]>(
+    Array(7).fill(ElementStates.Default)
+  );
   const [tail, setTail] = useState<number>(0);
   const [head, setHead] = useState<number>(0);
   const [length, setLength] = useState<number>(0);
@@ -42,7 +44,7 @@ export const QueuePage: React.FC = () => {
 
   const enqueue: FormEventHandler<HTMLFormElement> = async (evt) => {
     evt.preventDefault();
-    if (length >= size) {
+    if (length >= size || !inputText) {
       return null;
     }
     if (tail === size) {
@@ -58,6 +60,7 @@ export const QueuePage: React.FC = () => {
       );
       array[0] = inputText;
       ref.current.reset();
+      changeInputText("");
       setResult([...array]);
       setTail(1);
       setAddButton({ isLoader: false, disabled: false });
@@ -76,6 +79,7 @@ export const QueuePage: React.FC = () => {
       );
       array[tail] = inputText;
       ref.current.reset();
+      changeInputText("");
       setResult([...array]);
       setAddButton({ isLoader: false, disabled: false });
       arrayColor[tail] = ElementStates.Default;
@@ -173,7 +177,7 @@ export const QueuePage: React.FC = () => {
         />
       </form>
       <div className={styles.circles__box}>
-        {result.map((item: any, index: number) => (
+        {result.map((item: string, index: number) => (
           <Circle
             letter={item}
             key={index}
