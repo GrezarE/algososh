@@ -23,7 +23,7 @@ class Node<T> {
 
 export const ListPage: React.FC = () => {
   const [valueInput, setValueInput] = useState<string>("");
-  const [indexInput, setIndexInput] = useState();
+  const [indexInput, setIndexInput] = useState<number | string>();
   const [result, setResult] = useState(
     Array.from({ length: 4 }, () => Math.floor(Math.random() * 100).toString())
   );
@@ -73,6 +73,9 @@ export const ListPage: React.FC = () => {
 
   const onChangeValue: ChangeEventHandler<HTMLInputElement> = (evt) => {
     setValueInput(evt.target.value);
+  };
+  const onChangeIndex: ChangeEventHandler<HTMLInputElement> = (evt) => {
+    setIndexInput(evt.target.value);
   };
 
   const onHeadAdd = async () => {
@@ -152,7 +155,6 @@ export const ListPage: React.FC = () => {
     if (!valueInput || !indexInput) {
       return null;
     }
-    
   };
 
   const onIndexDelete = async () => {
@@ -163,6 +165,22 @@ export const ListPage: React.FC = () => {
       return null;
     }
   };
+
+  useEffect(() => {
+    if (indexInput) {
+      setDeleteIndexButton({ isLoader: false, disabled: false });
+    } else {
+      setDeleteIndexButton({ isLoader: false, disabled: true });
+    }
+  }, [indexInput]);
+
+  useEffect(() => {
+    if (indexInput && valueInput) {
+      setAddIndexButton({ isLoader: false, disabled: false });
+    } else {
+      setAddIndexButton({ isLoader: false, disabled: true });
+    }
+  }, [indexInput, valueInput]);
 
   return (
     <SolutionLayout title="Связный список">
@@ -208,6 +226,7 @@ export const ListPage: React.FC = () => {
           placeholder="Введите индекс"
           extraClass={styles.input__extra}
           type="number"
+          onChange={onChangeIndex}
         />
         <Button
           text="Добавить по индексу"
