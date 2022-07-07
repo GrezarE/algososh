@@ -1,0 +1,30 @@
+.form__box {
+    display: flex;
+    gap: 12px;
+    width: 952px;
+    margin: auto;
+}
+
+.circles__box {
+    display: flex;
+    margin-top: 90px;
+    gap: 56px;
+    width: 100%;
+    justify-content: center;
+}
+
+.input__extra {
+    width: 204px;
+}
+
+.circle__arrow {
+    position: relative;
+}
+
+.circle__arrow::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 25px;
+    
+}
