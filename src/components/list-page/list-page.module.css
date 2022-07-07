@@ -7,7 +7,7 @@
 
 .circles__box {
     display: flex;
-    margin-top: 90px;
+    margin-top: 56px;
     gap: 56px;
     width: 100%;
     justify-content: center;
@@ -21,12 +21,24 @@
     align-items: center;
 }
 
-.bottom__circle {
+.bottom__circle_hide {
+    opacity: 0;
     margin-top: 32px;
+
+}
+
+.bottom__circle_show {
+    opacity: 1;
+    margin-top: 32px;
+
 }
 
 .circle__hide {
-    display: none;
+    opacity: 0;
+}
+
+.circle__show {
+    opacity: 1;
 }
 
 .input__extra {
