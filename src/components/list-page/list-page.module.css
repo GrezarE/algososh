@@ -13,6 +13,22 @@
     justify-content: center;
 }
 
+.circle__box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottom__circle {
+    margin-top: 32px;
+}
+
+.circle__hide {
+    display: none;
+}
+
 .input__extra {
     width: 204px;
 }
@@ -24,7 +40,29 @@
 .circle__arrow::after {
     content: '';
     position: absolute;
-    top: 50%;
-    right: 25px;
-    
+    width: 100%;
+    height: 100%;
+    top: calc(50% - 8px);
+    left: 100px;
+    background-image: url('../../images/icons/arrow.svg');
+    background-repeat: no-repeat;
+}
+
+.circle__box:last-child .circle__arrow::after {
+    display: none;
+}
+
+.circle__arrow_changing {
+    position: relative;
+}
+
+.circle__arrow_changing::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: calc(50% - 8px);
+    left: 100px;
+    background-image: url('../../images/icons/arrow-change.svg');
+    background-repeat: no-repeat;
 }

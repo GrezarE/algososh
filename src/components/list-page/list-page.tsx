@@ -96,7 +96,26 @@ export const ListPage: React.FC = () => {
       </div>
       <div className={styles.circles__box}>
         {result &&
-          result.map((item, index) => <Circle letter={item} key={index} />)}
+          result.map((item, index) => (
+            <div className={styles.circle__box} key={`box-${index}`}>
+              <Circle
+                isSmall={true}
+                key={`top-${item}`}
+                extraClass={styles.circle__hide}
+              />
+              <Circle
+                letter={item}
+                key={`main-${index}`}
+                extraClass={styles.circle__arrow}
+                index={index}
+              />
+              <Circle
+                isSmall={true}
+                extraClass={(styles.bottom__circle, styles.circle__hide)}
+                key={`bottom-${item}`}
+              />
+            </div>
+          ))}
       </div>
     </SolutionLayout>
   );
