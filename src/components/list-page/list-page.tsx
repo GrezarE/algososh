@@ -148,6 +148,22 @@ export const ListPage: React.FC = () => {
     setTail(result.length - 1);
   };
 
+  const onIndexAdd = async () => {
+    if (!valueInput || !indexInput) {
+      return null;
+    }
+    
+  };
+
+  const onIndexDelete = async () => {
+    if (!indexInput) {
+      return null;
+    }
+    if (indexInput > result.length - 1) {
+      return null;
+    }
+  };
+
   return (
     <SolutionLayout title="Связный список">
       <div className={styles.form__box}>
@@ -188,7 +204,11 @@ export const ListPage: React.FC = () => {
         />
       </div>
       <div className={styles.form__box}>
-        <Input placeholder="Введите индекс" extraClass={styles.input__extra} />
+        <Input
+          placeholder="Введите индекс"
+          extraClass={styles.input__extra}
+          type="number"
+        />
         <Button
           text="Добавить по индексу"
           disabled={addIndexButton.disabled}
