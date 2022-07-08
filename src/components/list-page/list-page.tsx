@@ -23,7 +23,7 @@ class Node<T> {
 
 export const ListPage: React.FC = () => {
   const [valueInput, setValueInput] = useState<string>("");
-  const [indexInput, setIndexInput] = useState<number | string>();
+  const [indexInput, setIndexInput] = useState<any>();
   const [result, setResult] = useState(
     Array.from({ length: 4 }, () => Math.floor(Math.random() * 100).toString())
   );
@@ -155,6 +155,31 @@ export const ListPage: React.FC = () => {
     if (!valueInput || !indexInput) {
       return null;
     }
+    if (indexInput > result.length - 1) {
+      return null;
+    }
+    const indexValue = indexInput;
+    const value = valueInput;
+    setShowHead({ index: head, value: value });
+    setHead(-1);
+    for (let i = 1; i <= indexValue; i++) {
+      await new Promise((resolve: any) =>
+        setTimeout(() => {
+          resolve();
+        }, 1000)
+      );
+      setShowHead({ index: i, value: value });
+      setHead(0);
+    }
+    await new Promise((resolve: any) =>
+      setTimeout(() => {
+        resolve();
+      }, 1000)
+    );
+    result.splice(indexValue, 0, value);
+    setResult([...result]);
+    setShowHead({ index: null, value: "" });
+    setTail(result.length - 1);
   };
 
   const onIndexDelete = async () => {
@@ -233,6 +258,7 @@ export const ListPage: React.FC = () => {
           disabled={addIndexButton.disabled}
           isLoader={addIndexButton.isLoader}
           style={{ width: 362 }}
+          onClick={onIndexAdd}
         />
         <Button
           text="Удалить по индексу"
