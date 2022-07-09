@@ -178,8 +178,6 @@ export const ListPage: React.FC = () => {
     const indexValue = indexInput;
     const value = valueInput;
     const defaultColor = color.slice();
-    clearValue();
-    resetForms();
     setShowHead({ index: head, value: value });
     setHead(-1);
     color[0] = ElementStates.Changing;
@@ -213,6 +211,8 @@ export const ListPage: React.FC = () => {
     setResult([...result]);
     setShowHead({ index: null, value: "" });
     setTail(result.length - 1);
+    clearValue();
+    resetForms();
     setDeleteHeadButton({ isLoader: false, disabled: false });
     setDeleteTailButton({ isLoader: false, disabled: false });
     setTimeout(() => {
@@ -231,8 +231,6 @@ export const ListPage: React.FC = () => {
     const indexValue = Number(indexInput);
     const value = result[indexInput];
     const defaultColor = color.slice();
-    clearValue();
-    resetForms();
     setAddIndexButton({ isLoader: false, disabled: true });
     setAddHeadButton({ isLoader: false, disabled: true });
     setAddTailButton({ isLoader: false, disabled: true });
@@ -249,7 +247,6 @@ export const ListPage: React.FC = () => {
       color[i] = ElementStates.Changing;
       setColor([...color]);
     }
-    console.log(indexValue, tail);
     if (indexValue === tail) {
       setTail(-1);
     }
@@ -262,6 +259,8 @@ export const ListPage: React.FC = () => {
         resolve();
       }, 1000)
     );
+    clearValue();
+    resetForms();
     result.splice(indexValue, 1);
     setResult([...result]);
     setShowTail({ index: null, value: "" });
