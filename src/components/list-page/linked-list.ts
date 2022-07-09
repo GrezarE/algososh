@@ -9,10 +9,12 @@ export class Node<T> {
 
 interface ILinkedList<T> {
   append: (element: T) => void;
-  insertAt: (element: T, position: number) => void;
-  getSize: () => number;
-  print: () => void;
   prepend: (element: T) => void;
+  deleteHead?: () => void;
+  deleteTail?: () => void;
+  deleteByIndex?: (position: number) => void;
+  addByIndex: (element: T, position: number) => void;
+  getSize: () => number;
   toArray: () => void;
 }
 
@@ -24,7 +26,7 @@ export class LinkedList<T> implements ILinkedList<T> {
     this.size = 0;
   }
 
-  insertAt(element: T, index: number) {
+  addByIndex(element: T, index: number) {
     if (index < 0 || index > this.size) {
       console.log("Enter a valid index");
       return;
@@ -35,11 +37,9 @@ export class LinkedList<T> implements ILinkedList<T> {
         this.head = node;
       } else {
         let curr = this.head;
-        let currIndex = 0;
         for (let i = 1; i < index; i++) {
           if (curr) {
             curr = curr.next;
-            currIndex = i;
           }
         }
         if (curr) {
@@ -47,7 +47,6 @@ export class LinkedList<T> implements ILinkedList<T> {
           curr.next = node;
         }
       }
-
       this.size++;
     }
   }
@@ -79,18 +78,63 @@ export class LinkedList<T> implements ILinkedList<T> {
     this.size++;
   }
 
-  getSize() {
-    return this.size;
+  deleteHead() {
+    if (this.size === 1) {
+      this.head = null;
+    } else {
+      let current = this.head?.next;
+      this.head = current || null;
+    }
+    this.size--;
   }
 
-  print() {
-    let curr = this.head;
-    let res = "";
-    while (curr) {
-      res += `${curr.value} `;
-      curr = curr.next;
+  deleteTail() {
+    let current = this.head;
+    let prev = new Node<any>(0);
+    if (this.size === 1) {
+      this.head = null;
+    } else {
+      for (let i = 1; i <= this.size; ++i) {
+        if (current?.next) {
+          prev = current;
+          current = current.next;
+        } else {
+          current = prev;
+          current.next = null;
+        }
+      }
     }
-    console.log(res);
+    this.size--;
+  }
+
+  deleteByIndex(position: number) {
+    let current = this.head;
+    let prev: Node<any> | null = new Node(0);
+    if (position < 0 || position > this.size) {
+      console.log("Enter a valid index");
+      return;
+    } else {
+      if (this.size === 1) {
+        this.head = null;
+      } else {
+        for (let i = 0; i < position; i++) {
+          if (!current?.next) {
+            current = prev;
+            current.next = null;
+          }
+          prev = current;
+          current = current.next;
+          console.log(this.head);
+        }
+
+        prev.next = current ? current.next : null;
+      }
+    }
+    this.size--;
+  }
+
+  getSize() {
+    return this.size;
   }
 
   toArray() {
@@ -100,7 +144,6 @@ export class LinkedList<T> implements ILinkedList<T> {
       arr.push(curr.value);
       curr = curr.next;
     }
-    // console.log(arr);
     return arr;
   }
 }

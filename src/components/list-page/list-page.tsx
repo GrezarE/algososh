@@ -1,26 +1,16 @@
-import React, {
-  useState,
-  ChangeEventHandler,
-  FormEventHandler,
-  useEffect,
-  useRef,
-} from "react";
+import React, { useState, ChangeEventHandler, useEffect, useRef } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
-import { LinkedList, Node } from "./linked-list";
+import { LinkedList } from "./linked-list";
 import { ElementStates } from "../../types/element-states";
 import styles from "./list-page.module.css";
 
-// class Node<T> {
-//   value: T;
-//   next: Node<T> | null;
-//   constructor(value: T, next?: Node<T> | null) {
-//     this.value = value;
-//     this.next = next === undefined ? null : next;
-//   }
-// }
+interface IShow {
+  index: number | null;
+  value: string;
+}
 
 export const ListPage: React.FC = () => {
   const linkedList = new LinkedList<any>();
@@ -37,26 +27,20 @@ export const ListPage: React.FC = () => {
   const randomArray = createArr();
   randomArray.map((item) => linkedList.append(item));
 
-  // useEffect(() => {
-  //   const randomArray = createArr();
-  //   randomArray.map((item) => linkedList.append(item));
-  // }, []);
-
-  const [valueInput, setValueInput] = useState<any>("");
+  const [valueInput, setValueInput] = useState<string | null>("");
   const [indexInput, setIndexInput] = useState<any>();
-  const [result, setResult] = useState(
-    Array.from({ length: 4 }, () => Math.floor(Math.random() * 100).toString())
-  );
+
   const [tail, setTail] = useState<number>(linkRef.current.getSize() - 1);
   const [head, setHead] = useState<number>(0);
-  const [showHead, setShowHead] = useState<any>({ index: null, value: "" });
-  const [showTail, setShowTail] = useState<any>({
+  const [showHead, setShowHead] = useState<IShow>({ index: null, value: "" });
+  const [showTail, setShowTail] = useState<IShow>({
     index: null,
     value: "",
   });
   const [color, setColor] = useState<ElementStates[]>(
     Array(4).fill(ElementStates.Default)
   );
+  const [deletingCircle, setDeletingCircle] = useState(-1);
   const refValue = useRef<any>();
   const refIndex = useRef<any>();
 
@@ -115,12 +99,12 @@ export const ListPage: React.FC = () => {
         resolve();
       }, 500)
     );
-    result.unshift(valueInput);
+    linkRef.current.prepend(valueInput);
     refValue.current.reset();
     clearValue();
     setHead(0);
     setShowHead({ index: null, value: "" });
-    setTail(result.length - 1);
+    setTail(linkRef.current.getSize() - 1);
     color[0] = ElementStates.Modified;
     setColor([...color]);
     setTimeout(() => {
@@ -140,23 +124,26 @@ export const ListPage: React.FC = () => {
         resolve();
       }, 1000)
     );
-    result.push(valueInput);
+    linkRef.current.append(valueInput);
+    refValue.current.reset();
     clearValue();
-    resetForms();
     setShowHead({ index: null, value: "" });
-    setTail(result.length - 1);
+    setTail(linkRef.current.getSize() - 1);
     color[tail + 1] = ElementStates.Modified;
     setColor([...color]);
     setTimeout(() => {
       color[tail + 1] = ElementStates.Default;
       setColor([...color]);
     }, 1000);
-    setAddTailButton({ isLoader: false, disabled: false });
+    setAddTailButton({ isLoader: false, disabled: true });
   };
 
   const onHeadDelete = async () => {
-    setShowTail({ index: head, value: result[head || 0] });
-    result[head] = "";
+    setShowTail({ index: head, value: linkRef.current.toArray()[0] });
+    setDeletingCircle(0);
+    if (head === tail) {
+      setTail(-1);
+    }
     setDeleteHeadButton({ isLoader: true, disabled: false });
 
     await new Promise((resolve: any) =>
@@ -164,16 +151,16 @@ export const ListPage: React.FC = () => {
         resolve();
       }, 500)
     );
-    result.shift();
-    setResult([...result]);
+    linkRef.current.deleteHead();
+    setDeletingCircle(-1);
     setShowTail({ index: null, value: "" });
-    setTail(result.length - 1);
+    setTail(linkRef.current.getSize() - 1);
     setDeleteHeadButton({ isLoader: false, disabled: false });
   };
 
   const onTailDelete = async () => {
-    setShowTail({ index: tail, value: result[tail] });
-    result[tail] = "";
+    setShowTail({ index: tail, value: linkRef.current.toArray()[tail] });
+    setDeletingCircle(tail);
     setTail(-1);
     setDeleteTailButton({ isLoader: true, disabled: false });
     await new Promise((resolve: any) =>
@@ -181,10 +168,10 @@ export const ListPage: React.FC = () => {
         resolve();
       }, 500)
     );
-    result.pop();
-    setResult([...result]);
+    linkRef.current.deleteTail();
+    setDeletingCircle(-1);
     setShowTail({ index: null, value: "" });
-    setTail(result.length - 1);
+    setTail(linkRef.current.getSize() - 1);
     setDeleteTailButton({ isLoader: false, disabled: false });
   };
 
@@ -192,7 +179,7 @@ export const ListPage: React.FC = () => {
     if (!valueInput || !indexInput) {
       return null;
     }
-    if (indexInput > result.length - 1) {
+    if (indexInput > linkRef.current.getSize() - 1) {
       return null;
     }
     const indexValue = indexInput;
@@ -227,10 +214,9 @@ export const ListPage: React.FC = () => {
     );
     defaultColor[indexValue] = ElementStates.Modified;
     setColor([...defaultColor]);
-    result.splice(indexValue, 0, value);
-    setResult([...result]);
+    linkRef.current.addByIndex(value, indexValue);
     setShowHead({ index: null, value: "" });
-    setTail(result.length - 1);
+    setTail(linkRef.current.getSize() - 1);
     clearValue();
     resetForms();
     setDeleteHeadButton({ isLoader: false, disabled: false });
@@ -245,11 +231,10 @@ export const ListPage: React.FC = () => {
     if (!indexInput) {
       return null;
     }
-    if (indexInput > result.length - 1) {
+    if (indexInput > linkRef.current.getSize() - 1) {
       return null;
     }
     const indexValue = Number(indexInput);
-    const value = result[indexInput];
     const defaultColor = color.slice();
     setAddIndexButton({ isLoader: false, disabled: true });
     setAddHeadButton({ isLoader: false, disabled: true });
@@ -270,9 +255,11 @@ export const ListPage: React.FC = () => {
     if (indexValue === tail) {
       setTail(-1);
     }
-    setShowTail({ index: indexValue, value: value });
-    result[indexValue] = "";
-    setResult([...result]);
+    setShowTail({
+      index: indexValue,
+      value: linkRef.current.toArray()[Number(indexValue)],
+    });
+    setDeletingCircle(indexValue);
 
     await new Promise((resolve: any) =>
       setTimeout(() => {
@@ -281,11 +268,11 @@ export const ListPage: React.FC = () => {
     );
     clearValue();
     resetForms();
-    result.splice(indexValue, 1);
-    setResult([...result]);
+    linkRef.current.deleteByIndex(indexValue);
+    setDeletingCircle(-1);
     setShowTail({ index: null, value: "" });
     setColor([...defaultColor]);
-    setTail(result.length - 1);
+    setTail(linkRef.current.getSize() - 1);
     setDeleteIndexButton({ isLoader: false, disabled: false });
     setIndexInput(null);
   };
@@ -315,11 +302,6 @@ export const ListPage: React.FC = () => {
       setAddTailButton({ isLoader: false, disabled: true });
     }
   }, [valueInput]);
-
-  useEffect(() => {
-    console.log(linkRef.current);
-    console.log(tail);
-  }, [linkRef]);
 
   return (
     <SolutionLayout title="Связный список">
@@ -398,7 +380,7 @@ export const ListPage: React.FC = () => {
                 state={ElementStates.Changing}
               />
               <Circle
-                letter={item}
+                letter={deletingCircle === index ? null : item}
                 key={`main-${index}`}
                 extraClass={styles.circle__arrow}
                 index={index}
