@@ -35,7 +35,6 @@ export const FibonacciPage: React.FC = () => {
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (evt) => {
     changeInputText(evt.target.value);
-    console.log(evt.target.value);
   };
   const onSubmit: FormEventHandler<HTMLFormElement> = (evt) => {
     evt.preventDefault();
