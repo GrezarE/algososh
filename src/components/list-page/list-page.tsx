@@ -22,14 +22,13 @@ class Node<T> {
 }
 
 export const ListPage: React.FC = () => {
-  const [valueInput, setValueInput] = useState<string>("");
+  const [valueInput, setValueInput] = useState<any>("");
   const [indexInput, setIndexInput] = useState<any>();
   const [result, setResult] = useState(
     Array.from({ length: 4 }, () => Math.floor(Math.random() * 100).toString())
   );
   const [tail, setTail] = useState<number>(result.length - 1);
   const [head, setHead] = useState<number>(0);
-  const [list, setList] = useState(new Node(1));
   const [showHead, setShowHead] = useState<any>({ index: null, value: "" });
   const [showTail, setShowTail] = useState<any>({
     index: null,
@@ -38,6 +37,9 @@ export const ListPage: React.FC = () => {
   const [color, setColor] = useState<ElementStates[]>(
     Array(4).fill(ElementStates.Default)
   );
+  const refValue = useRef<any>();
+  const refIndex = useRef<any>();
+
   const [addHeadButton, setAddHeadButton] = useState({
     isLoader: false,
     disabled: false,
@@ -63,19 +65,22 @@ export const ListPage: React.FC = () => {
     disabled: false,
   });
 
-  useEffect(() => {
-    list.next = new Node(2);
-    list.next.next = new Node(35);
-    list.next.next.next = new Node(55);
-    setList(list);
-    console.log(list);
-  }, [list]);
-
   const onChangeValue: ChangeEventHandler<HTMLInputElement> = (evt) => {
     setValueInput(evt.target.value);
   };
+
   const onChangeIndex: ChangeEventHandler<HTMLInputElement> = (evt) => {
     setIndexInput(evt.target.value);
+  };
+
+  const resetForms = () => {
+    refIndex.current.reset();
+    refValue.current.reset();
+  };
+
+  const clearValue = () => {
+    setValueInput(null);
+    setIndexInput(null);
   };
 
   const onHeadAdd = async () => {
@@ -84,12 +89,15 @@ export const ListPage: React.FC = () => {
     }
     setShowHead({ index: head, value: valueInput });
     setHead(-1);
+    setAddHeadButton({ isLoader: true, disabled: false });
     await new Promise((resolve: any) =>
       setTimeout(() => {
         resolve();
       }, 500)
     );
     result.unshift(valueInput);
+    refValue.current.reset();
+    clearValue();
     setHead(0);
     setShowHead({ index: null, value: "" });
     setTail(result.length - 1);
@@ -106,12 +114,15 @@ export const ListPage: React.FC = () => {
       return null;
     }
     setShowHead({ index: tail, value: valueInput });
+    setAddTailButton({ isLoader: true, disabled: false });
     await new Promise((resolve: any) =>
       setTimeout(() => {
         resolve();
-      }, 500)
+      }, 1000)
     );
     result.push(valueInput);
+    clearValue();
+    resetForms();
     setShowHead({ index: null, value: "" });
     setTail(result.length - 1);
     color[tail + 1] = ElementStates.Modified;
@@ -120,11 +131,14 @@ export const ListPage: React.FC = () => {
       color[tail + 1] = ElementStates.Default;
       setColor([...color]);
     }, 1000);
+    setAddTailButton({ isLoader: false, disabled: false });
   };
 
   const onHeadDelete = async () => {
     setShowTail({ index: head, value: result[head || 0] });
     result[head] = "";
+    setDeleteHeadButton({ isLoader: true, disabled: false });
+
     await new Promise((resolve: any) =>
       setTimeout(() => {
         resolve();
@@ -134,12 +148,14 @@ export const ListPage: React.FC = () => {
     setResult([...result]);
     setShowTail({ index: null, value: "" });
     setTail(result.length - 1);
+    setDeleteHeadButton({ isLoader: false, disabled: false });
   };
 
   const onTailDelete = async () => {
     setShowTail({ index: tail, value: result[tail] });
     result[tail] = "";
     setTail(-1);
+    setDeleteTailButton({ isLoader: true, disabled: false });
     await new Promise((resolve: any) =>
       setTimeout(() => {
         resolve();
@@ -149,6 +165,7 @@ export const ListPage: React.FC = () => {
     setResult([...result]);
     setShowTail({ index: null, value: "" });
     setTail(result.length - 1);
+    setDeleteTailButton({ isLoader: false, disabled: false });
   };
 
   const onIndexAdd = async () => {
@@ -160,8 +177,19 @@ export const ListPage: React.FC = () => {
     }
     const indexValue = indexInput;
     const value = valueInput;
+    const defaultColor = color.slice();
+    clearValue();
+    resetForms();
     setShowHead({ index: head, value: value });
     setHead(-1);
+    color[0] = ElementStates.Changing;
+    setAddIndexButton({ isLoader: true, disabled: false });
+    setAddHeadButton({ isLoader: false, disabled: true });
+    setAddTailButton({ isLoader: false, disabled: true });
+    setDeleteHeadButton({ isLoader: false, disabled: true });
+    setDeleteTailButton({ isLoader: false, disabled: true });
+    setDeleteIndexButton({ isLoader: false, disabled: true });
+
     for (let i = 1; i <= indexValue; i++) {
       await new Promise((resolve: any) =>
         setTimeout(() => {
@@ -169,17 +197,28 @@ export const ListPage: React.FC = () => {
         }, 1000)
       );
       setShowHead({ index: i, value: value });
+      color[i] = ElementStates.Changing;
+      setColor([...color]);
       setHead(0);
     }
+
     await new Promise((resolve: any) =>
       setTimeout(() => {
         resolve();
       }, 1000)
     );
+    defaultColor[indexValue] = ElementStates.Modified;
+    setColor([...defaultColor]);
     result.splice(indexValue, 0, value);
     setResult([...result]);
     setShowHead({ index: null, value: "" });
     setTail(result.length - 1);
+    setDeleteHeadButton({ isLoader: false, disabled: false });
+    setDeleteTailButton({ isLoader: false, disabled: false });
+    setTimeout(() => {
+      defaultColor[indexValue] = ElementStates.Default;
+      setColor([...defaultColor]);
+    }, 1000);
   };
 
   const onIndexDelete = async () => {
@@ -189,6 +228,47 @@ export const ListPage: React.FC = () => {
     if (indexInput > result.length - 1) {
       return null;
     }
+    const indexValue = Number(indexInput);
+    const value = result[indexInput];
+    const defaultColor = color.slice();
+    clearValue();
+    resetForms();
+    setAddIndexButton({ isLoader: false, disabled: true });
+    setAddHeadButton({ isLoader: false, disabled: true });
+    setAddTailButton({ isLoader: false, disabled: true });
+    setDeleteHeadButton({ isLoader: false, disabled: true });
+    setDeleteTailButton({ isLoader: false, disabled: true });
+    setDeleteIndexButton({ isLoader: true, disabled: false });
+
+    for (let i = 0; i <= indexValue; i++) {
+      await new Promise((resolve: any) =>
+        setTimeout(() => {
+          resolve();
+        }, 1000)
+      );
+      color[i] = ElementStates.Changing;
+      setColor([...color]);
+    }
+    console.log(indexValue, tail);
+    if (indexValue === tail) {
+      setTail(-1);
+    }
+    setShowTail({ index: indexValue, value: value });
+    result[indexValue] = "";
+    setResult([...result]);
+
+    await new Promise((resolve: any) =>
+      setTimeout(() => {
+        resolve();
+      }, 1000)
+    );
+    result.splice(indexValue, 1);
+    setResult([...result]);
+    setShowTail({ index: null, value: "" });
+    setColor([...defaultColor]);
+    setTail(result.length - 1);
+    setDeleteIndexButton({ isLoader: false, disabled: false });
+    setIndexInput(null);
   };
 
   useEffect(() => {
@@ -200,22 +280,32 @@ export const ListPage: React.FC = () => {
   }, [indexInput]);
 
   useEffect(() => {
-    if (indexInput && valueInput) {
-      setAddIndexButton({ isLoader: false, disabled: false });
-    } else {
+    if (!indexInput || !valueInput) {
       setAddIndexButton({ isLoader: false, disabled: true });
+    } else {
+      setAddIndexButton({ isLoader: false, disabled: false });
     }
   }, [indexInput, valueInput]);
 
+  useEffect(() => {
+    if (valueInput) {
+      setAddHeadButton({ isLoader: false, disabled: false });
+      setAddTailButton({ isLoader: false, disabled: false });
+    } else {
+      setAddHeadButton({ isLoader: false, disabled: true });
+      setAddTailButton({ isLoader: false, disabled: true });
+    }
+  }, [valueInput]);
+
   return (
     <SolutionLayout title="Связный список">
-      <div className={styles.form__box}>
+      <form className={styles.form__box} ref={refValue}>
         <Input
           maxLength={4}
           isLimitText={true}
           placeholder="Введите значение"
           extraClass={styles.input__extra}
-          onChange={onChangeValue}
+          onInput={onChangeValue}
         />
         <Button
           text="Добавить в head"
@@ -245,13 +335,13 @@ export const ListPage: React.FC = () => {
           style={{ width: 175 }}
           onClick={onTailDelete}
         />
-      </div>
-      <div className={styles.form__box}>
+      </form>
+      <form className={styles.form__box} ref={refIndex}>
         <Input
           placeholder="Введите индекс"
           extraClass={styles.input__extra}
           type="number"
-          onChange={onChangeIndex}
+          onInput={onChangeIndex}
         />
         <Button
           text="Добавить по индексу"
@@ -265,8 +355,9 @@ export const ListPage: React.FC = () => {
           disabled={deleteIndexButton.disabled}
           isLoader={deleteIndexButton.isLoader}
           style={{ maxWidth: 362, width: 362 }}
+          onClick={onIndexDelete}
         />
-      </div>
+      </form>
       <div className={styles.circles__box}>
         {result &&
           result.map((item, index) => (
