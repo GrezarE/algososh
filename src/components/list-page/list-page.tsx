@@ -9,25 +9,45 @@ import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
+import { LinkedList, Node } from "./linked-list";
 import { ElementStates } from "../../types/element-states";
 import styles from "./list-page.module.css";
 
-class Node<T> {
-  value: T;
-  next: Node<T> | null;
-  constructor(value: T, next?: Node<T> | null) {
-    this.value = value;
-    this.next = next === undefined ? null : next;
-  }
-}
+// class Node<T> {
+//   value: T;
+//   next: Node<T> | null;
+//   constructor(value: T, next?: Node<T> | null) {
+//     this.value = value;
+//     this.next = next === undefined ? null : next;
+//   }
+// }
 
 export const ListPage: React.FC = () => {
+  const linkedList = new LinkedList<any>();
+  const linkRef = useRef(linkedList);
+
+  const createArr = () => {
+    const arrLength = Math.floor(Math.random() * 6 + 1);
+    const rArray = Array.from({ length: arrLength }, () =>
+      Math.floor(Math.random() * 9999)
+    );
+    return rArray;
+  };
+
+  const randomArray = createArr();
+  randomArray.map((item) => linkedList.append(item));
+
+  // useEffect(() => {
+  //   const randomArray = createArr();
+  //   randomArray.map((item) => linkedList.append(item));
+  // }, []);
+
   const [valueInput, setValueInput] = useState<any>("");
   const [indexInput, setIndexInput] = useState<any>();
   const [result, setResult] = useState(
     Array.from({ length: 4 }, () => Math.floor(Math.random() * 100).toString())
   );
-  const [tail, setTail] = useState<number>(result.length - 1);
+  const [tail, setTail] = useState<number>(linkRef.current.getSize() - 1);
   const [head, setHead] = useState<number>(0);
   const [showHead, setShowHead] = useState<any>({ index: null, value: "" });
   const [showTail, setShowTail] = useState<any>({
@@ -296,6 +316,11 @@ export const ListPage: React.FC = () => {
     }
   }, [valueInput]);
 
+  useEffect(() => {
+    console.log(linkRef.current);
+    console.log(tail);
+  }, [linkRef]);
+
   return (
     <SolutionLayout title="Связный список">
       <form className={styles.form__box} ref={refValue}>
@@ -358,8 +383,8 @@ export const ListPage: React.FC = () => {
         />
       </form>
       <div className={styles.circles__box}>
-        {result &&
-          result.map((item, index) => (
+        {linkRef &&
+          linkRef.current.toArray().map((item, index) => (
             <div className={styles.circle__box} key={`box-${index}`}>
               <Circle
                 letter={showHead.value}
@@ -394,6 +419,42 @@ export const ListPage: React.FC = () => {
               />
             </div>
           ))}
+        {/* {result &&
+          result.map((item, index) => (
+            <div className={styles.circle__box} key={`box-${index}`}>
+              <Circle
+                letter={showHead.value}
+                isSmall={true}
+                key={`top-${index}`}
+                extraClass={
+                  index === showHead.index
+                    ? styles.circle__show
+                    : styles.circle__hide
+                }
+                state={ElementStates.Changing}
+              />
+              <Circle
+                letter={item}
+                key={`main-${index}`}
+                extraClass={styles.circle__arrow}
+                index={index}
+                tail={index === tail ? "tail" : ""}
+                head={index === head ? "head" : ""}
+                state={color[index]}
+              />
+              <Circle
+                isSmall={true}
+                letter={showTail.value}
+                extraClass={
+                  index === showTail.index
+                    ? styles.bottom__circle_show
+                    : styles.bottom__circle_hide
+                }
+                key={`bottom-${index}`}
+                state={ElementStates.Changing}
+              />
+            </div>
+          ))} */}
       </div>
       {/* <div>{list && <Circle letter={list.value.toString()} />}</div> */}
     </SolutionLayout>
