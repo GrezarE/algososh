@@ -19,7 +19,6 @@ export class Stack<T> implements IStack<T> {
   };
 
   peak = (): T | null => {
-    console.log(this.container);
     if (this.container.length < 1) {
       return null;
     }
@@ -35,12 +34,3 @@ export class Stack<T> implements IStack<T> {
 
   getElements = () => this.container;
 }
-
-const st = new Stack<string>();
-st.push("прив");
-st.push("как");
-st.push("сам?");
-st.pop();
-console.log(st.peak()); // как
-st.push("дела?");
-console.log(st.peak()); // дела?
