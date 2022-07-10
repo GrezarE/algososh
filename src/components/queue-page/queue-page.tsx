@@ -16,6 +16,12 @@ import { Queue } from "./queue";
 export const QueuePage: React.FC = () => {
   const queue = new Queue<string>(7);
   const queueRef = useRef(queue);
+
+  const tail = queueRef.current.getTail();
+  const size = queueRef.current.getSize();
+  const length = queueRef.current.getLength();
+  const head = queueRef.current.getHead();
+
   const [inputText, changeInputText] = useState("");
   const [color, setColor] = useState<ElementStates[]>(
     Array(7).fill(ElementStates.Default)
@@ -40,9 +46,6 @@ export const QueuePage: React.FC = () => {
 
   const onEnqueue: MouseEventHandler<HTMLButtonElement> = async (evt) => {
     evt.preventDefault();
-    const tail = queueRef.current.getTail();
-    const size = queueRef.current.getSize();
-    const length = queueRef.current.getLength();
 
     if (!inputText || length >= size) {
       return null;
@@ -88,10 +91,6 @@ export const QueuePage: React.FC = () => {
   };
 
   const onDequeue = async () => {
-    const length = queueRef.current.getLength();
-    const size = queueRef.current.getSize();
-    const head = queueRef.current.getHead();
-
     if (length === 0) {
       return null;
     }
@@ -132,14 +131,14 @@ export const QueuePage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (queueRef.current.getLength() < 1) {
+    if (length < 1) {
       setDeleteButton({ isLoader: false, disabled: true });
       setClearButton({ isLoader: false, disabled: true });
     } else {
       setDeleteButton({ isLoader: false, disabled: false });
       setClearButton({ isLoader: false, disabled: false });
     }
-  }, [queueRef.current.getLength()]);
+  }, [length]);
 
   useEffect(() => {
     if (!inputText) {
@@ -182,46 +181,17 @@ export const QueuePage: React.FC = () => {
                 letter={item ? item : ""}
                 key={index}
                 index={index}
-                tail={
-                  index === queueRef.current.getTail() - 1 &&
-                  queueRef.current.getLength() !== 0
-                    ? "tail"
-                    : ""
-                }
+                tail={index === tail - 1 && length !== 0 ? "tail" : ""}
                 head={
-                  index === queueRef.current.getHead() &&
-                  queueRef.current.getLength() !== 0
+                  index === head && length !== 0
                     ? "top"
-                    : index === queueRef.current.getHead() - 1 &&
-                      queueRef.current.getHead() === queueRef.current.getSize()
+                    : index === head - 1 && head === size
                     ? "top"
                     : ""
                 }
                 state={color[index]}
               />
             ))}
-        {/* {queueRef &&
-          queueRef.current
-            .getElements()
-            .map((item: any, index: number) => (
-              <Circle letter={item} />
-            ))} */}
-        {/* {result.map((item: string, index: number) => (
-          <Circle
-            letter={item}
-            key={index}
-            index={index}
-            tail={index === tail - 1 && length !== 0 ? "tail" : ""}
-            head={
-              index === head && length !== 0
-                ? "top"
-                : index === head - 1 && head === size
-                ? "top"
-                : ""
-            }
-            state={color[index]}
-          />
-        ))} */}
       </div>
     </SolutionLayout>
   );

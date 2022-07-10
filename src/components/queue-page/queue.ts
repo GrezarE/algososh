@@ -51,11 +51,6 @@ export class Queue<T> implements IQueue<T> {
     this.tail = 0;
     this.length = 0;
     this.container = Array(this.size).fill(null);
-    // this.container[0] = null;
-    // this.tail = 0;
-    // this.container[this.tail] = null;
-    // this.tail++;
-    console.log(this.container);
   };
 
   getElements() {
