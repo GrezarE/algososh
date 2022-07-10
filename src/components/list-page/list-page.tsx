@@ -401,44 +401,7 @@ export const ListPage: React.FC = () => {
               />
             </div>
           ))}
-        {/* {result &&
-          result.map((item, index) => (
-            <div className={styles.circle__box} key={`box-${index}`}>
-              <Circle
-                letter={showHead.value}
-                isSmall={true}
-                key={`top-${index}`}
-                extraClass={
-                  index === showHead.index
-                    ? styles.circle__show
-                    : styles.circle__hide
-                }
-                state={ElementStates.Changing}
-              />
-              <Circle
-                letter={item}
-                key={`main-${index}`}
-                extraClass={styles.circle__arrow}
-                index={index}
-                tail={index === tail ? "tail" : ""}
-                head={index === head ? "head" : ""}
-                state={color[index]}
-              />
-              <Circle
-                isSmall={true}
-                letter={showTail.value}
-                extraClass={
-                  index === showTail.index
-                    ? styles.bottom__circle_show
-                    : styles.bottom__circle_hide
-                }
-                key={`bottom-${index}`}
-                state={ElementStates.Changing}
-              />
-            </div>
-          ))} */}
       </div>
-      {/* <div>{list && <Circle letter={list.value.toString()} />}</div> */}
     </SolutionLayout>
   );
 };
