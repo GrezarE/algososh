@@ -1,9 +1,9 @@
 import React, {
   useState,
   useRef,
-  FormEventHandler,
   ChangeEventHandler,
   useEffect,
+  MouseEventHandler,
 } from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
@@ -11,20 +11,22 @@ import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import styles from "./queue-page.module.css";
 import { ElementStates } from "../../types/element-states";
+import { Queue } from "./queue";
 
 export const QueuePage: React.FC = () => {
+  const queue = new Queue<string>(7);
+  const queueRef = useRef(queue);
+
+  const tail = queueRef.current.getTail();
+  const size = queueRef.current.getSize();
+  const length = queueRef.current.getLength();
+  const head = queueRef.current.getHead();
+
   const [inputText, changeInputText] = useState("");
-  const [result, setResult] = useState<any[]>(Array(7).fill(null));
   const [color, setColor] = useState<ElementStates[]>(
     Array(7).fill(ElementStates.Default)
   );
-  const [tail, setTail] = useState<number>(0);
-  const [head, setHead] = useState<number>(0);
-  const [length, setLength] = useState<number>(0);
   const ref = useRef<any>();
-
-  const size = 7;
-
   const [addButton, setAddButton] = useState({
     isLoader: false,
     disabled: true,
@@ -42,54 +44,53 @@ export const QueuePage: React.FC = () => {
     changeInputText(evt.target.value);
   };
 
-  const enqueue: FormEventHandler<HTMLFormElement> = async (evt) => {
+  const onEnqueue: MouseEventHandler<HTMLButtonElement> = async (evt) => {
     evt.preventDefault();
-    if (length >= size || !inputText) {
+
+    if (!inputText || length >= size) {
       return null;
     }
     if (tail === size) {
-      let array = result;
       const arrayColor = color;
       arrayColor[0] = ElementStates.Changing;
       setColor([...arrayColor]);
       setAddButton({ isLoader: true, disabled: false });
+
       await new Promise((resolve: any) =>
         setTimeout(() => {
           resolve();
         }, 500)
       );
-      array[0] = inputText;
+
+      queueRef.current.enqueue(inputText);
+
       ref.current.reset();
       changeInputText("");
-      setResult([...array]);
-      setTail(1);
       setAddButton({ isLoader: false, disabled: false });
       arrayColor[0] = ElementStates.Default;
       setColor([...arrayColor]);
     } else {
-      let array = result;
       const arrayColor = color;
       arrayColor[tail] = ElementStates.Changing;
       setColor([...arrayColor]);
       setAddButton({ isLoader: true, disabled: false });
+
       await new Promise((resolve: any) =>
         setTimeout(() => {
           resolve();
         }, 500)
       );
-      array[tail] = inputText;
+
       ref.current.reset();
       changeInputText("");
-      setResult([...array]);
       setAddButton({ isLoader: false, disabled: false });
+      queueRef.current.enqueue(inputText);
       arrayColor[tail] = ElementStates.Default;
       setColor([...arrayColor]);
-      setTail(tail + 1);
     }
-    setLength(length + 1);
   };
 
-  const dequeue = async () => {
+  const onDequeue = async () => {
     if (length === 0) {
       return null;
     }
@@ -97,52 +98,47 @@ export const QueuePage: React.FC = () => {
       const arrayColor = color;
       arrayColor[0] = ElementStates.Changing;
       setColor([...arrayColor]);
-      let array = result;
-      array[0] = null;
+      queueRef.current.dequeue();
+
       await new Promise((resolve: any) =>
         setTimeout(() => {
           resolve();
         }, 500)
       );
-      setResult([...array]);
-      setHead(1);
+
       arrayColor[0] = ElementStates.Default;
       setColor([...arrayColor]);
     } else {
       const arrayColor = color;
       arrayColor[head] = ElementStates.Changing;
-      let array = result;
       setColor([...arrayColor]);
+
       await new Promise((resolve: any) =>
         setTimeout(() => {
           resolve();
         }, 500)
       );
-      array[head] = null;
-      setResult([...array]);
+
+      queueRef.current.dequeue();
       arrayColor[head] = ElementStates.Default;
       setColor([...arrayColor]);
-      setHead(head + 1);
     }
-    setLength(length - 1);
   };
 
-  const onClear = () => {
-    setResult(Array(7).fill(null));
-    setHead(0);
-    setTail(0);
-    setLength(0);
+  const onClear = async () => {
+    setColor([...color]);
+    queueRef.current.setClear();
   };
 
   useEffect(() => {
-    if (result.length < 1) {
+    if (length < 1) {
       setDeleteButton({ isLoader: false, disabled: true });
       setClearButton({ isLoader: false, disabled: true });
     } else {
       setDeleteButton({ isLoader: false, disabled: false });
       setClearButton({ isLoader: false, disabled: false });
     }
-  }, [result]);
+  }, [length]);
 
   useEffect(() => {
     if (!inputText) {
@@ -154,18 +150,18 @@ export const QueuePage: React.FC = () => {
 
   return (
     <SolutionLayout title="Очередь">
-      <form className={styles.form__box} onSubmit={enqueue} ref={ref}>
-        <Input maxLength={4} isLimitText={true} onChange={onChange} />
+      <form className={styles.form__box} ref={ref}>
+        <Input maxLength={4} isLimitText={true} onInput={onChange} />
         <Button
           text="Добавить"
-          type="submit"
           disabled={addButton.disabled}
           isLoader={addButton.isLoader}
+          onClick={onEnqueue}
         />
         <Button
           style={{ marginRight: 68 }}
           text="Удалить"
-          onClick={dequeue}
+          onClick={onDequeue}
           disabled={deleteButton.disabled}
           isLoader={deleteButton.isLoader}
         />
@@ -177,22 +173,25 @@ export const QueuePage: React.FC = () => {
         />
       </form>
       <div className={styles.circles__box}>
-        {result.map((item: string, index: number) => (
-          <Circle
-            letter={item}
-            key={index}
-            index={index}
-            tail={index === tail - 1 && length !== 0 ? "tail" : ""}
-            head={
-              index === head && length !== 0
-                ? "head"
-                : index === head - 1 && head === size
-                ? "head"
-                : ""
-            }
-            state={color[index]}
-          />
-        ))}
+        {queueRef.current &&
+          queueRef.current
+            .getElements()
+            .map((item: string | null, index: number) => (
+              <Circle
+                letter={item ? item : ""}
+                key={index}
+                index={index}
+                tail={index === tail - 1 && length !== 0 ? "tail" : ""}
+                head={
+                  index === head && length !== 0
+                    ? "top"
+                    : index === head - 1 && head === size
+                    ? "top"
+                    : ""
+                }
+                state={color[index]}
+              />
+            ))}
       </div>
     </SolutionLayout>
   );
