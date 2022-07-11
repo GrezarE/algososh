@@ -1,0 +1,80 @@
+.form__box {
+    display: flex;
+    gap: 12px;
+    width: 952px;
+    margin: auto;
+}
+
+.circles__box {
+    display: flex;
+    margin-top: 56px;
+    gap: 56px;
+    width: 100%;
+    justify-content: center;
+}
+
+.circle__box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottom__circle_hide {
+    opacity: 0;
+    margin-top: 32px;
+
+}
+
+.bottom__circle_show {
+    opacity: 1;
+    margin-top: 32px;
+
+}
+
+.circle__hide {
+    opacity: 0;
+}
+
+.circle__show {
+    opacity: 1;
+}
+
+.input__extra {
+    width: 204px;
+}
+
+.circle__arrow {
+    position: relative;
+}
+
+.circle__arrow::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: calc(50% - 8px);
+    left: 100px;
+    background-image: url('../../images/icons/arrow.svg');
+    background-repeat: no-repeat;
+}
+
+.circle__box:last-child .circle__arrow::after {
+    display: none;
+}
+
+.circle__arrow_changing {
+    position: relative;
+}
+
+.circle__arrow_changing::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: calc(50% - 8px);
+    left: 100px;
+    background-image: url('../../images/icons/arrow-change.svg');
+    background-repeat: no-repeat;
+}
