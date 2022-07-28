@@ -57,12 +57,11 @@ export const SortingArray = (props: any) => {
         arr[j].color = ElementStates.Changing;
         arr[j + 1].color = ElementStates.Changing;
         setRandomArray([...arr]);
-        // await new Promise((resolve: any) =>
-        //   setTimeout(() => {
-        //     resolve();
-        //   }, 250)
-        // );
-        // await setTimeout(() => {}, 250);
+        await new Promise((resolve: any) =>
+          setTimeout(() => {
+            resolve();
+          }, 250)
+        );
         if (simbol === "Ascending") {
           if (arr[j].number > arr[j + 1].number) {
             let temp = arr[j].number;
@@ -120,7 +119,6 @@ export const SortingArray = (props: any) => {
       arr[i].color = ElementStates.Modified;
       setRandomArray([...arr]);
     }
-    console.log(arr);
   };
 
   const onSortAscending = async () => {
@@ -161,6 +159,7 @@ export const SortingArray = (props: any) => {
       setCreateButton({ ...createButton, disabled: false });
     }
   };
+
   const onChangeRadio = (value: string) => {
     setChecked(value);
   };

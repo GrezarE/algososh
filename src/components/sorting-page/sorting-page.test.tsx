@@ -1,18 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  act,
-} from "@testing-library/react";
-import { renderHook } from "@testing-library/react-hooks";
-import { SortedArray } from "typescript";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ElementStates } from "../../types/element-states";
-// import { act } from "react-test-renderer";
-import ReactDOM from "react-dom";
 import { SortingArray } from "./sorting-page";
-import { arrLength, createRandom } from "../../utils/utils";
 
 interface IRandomObj {
   number: number;
@@ -26,16 +15,22 @@ const testingObj = [
   { number: 99, color: ElementStates.Default },
 ];
 const testingObjOne = [{ number: 99, color: ElementStates.Default }];
+const zeroObj = undefined;
 
-const Test = () => {
-  const [randomArray, setRandomArray] = useState<IRandomObj[]>();
+const Test = ({ testArray }: any) => {
+  const [randomArray, setRandomArray] = useState<IRandomObj[] | undefined>(
+    testArray
+  );
 
   const createRandomArr = (obj: any) => {
     setRandomArray(obj);
   };
 
   useEffect(() => {
-    createRandomArr(testingObj);
+    createRandomArr(testArray);
+    return () => {
+      setRandomArray(undefined);
+    };
   }, []);
 
   return (
@@ -47,36 +42,103 @@ const Test = () => {
   );
 };
 
-describe("", () => {});
+describe("Сортировка", () => {
+  it("Сортировка массива из 4 элементов пузырьком", async () => {
+    jest.useFakeTimers();
+    render(<Test testArray={testingObj} />);
 
-it("", async () => {
-  jest.useFakeTimers();
-  act(() => {
-    render(<Test />);
+    const check: HTMLInputElement = screen.getByTestId("check");
+    const sortUp: HTMLButtonElement = screen.getByTestId("sort-up");
+    fireEvent.click(check, { target: { check: true } });
+    fireEvent.click(sortUp);
+    jest.advanceTimersByTime(1000);
+    const column0 = screen.queryByTestId("Column_0");
+    const column1 = screen.queryByTestId("Column_1");
+    const column2 = screen.queryByTestId("Column_2");
+    const column3 = screen.queryByTestId("Column_3");
+    await waitFor(() => {
+      expect(column0?.textContent).toBe("3");
+    });
+    await waitFor(() => {
+      expect(column1?.textContent).toBe("21");
+    });
+    await waitFor(() => {
+      expect(column2?.textContent).toBe("75");
+    });
+    await waitFor(() => {
+      expect(column3?.textContent).toBe("99");
+    });
   });
 
-  const check: HTMLInputElement = screen.getByTestId("check");
-  const bubble: HTMLInputElement = screen.getByTestId("bubble");
-  const sortUp: HTMLButtonElement = screen.getByTestId("sort-up");
-  const sortDown: HTMLButtonElement = screen.getByTestId("sort-down");
-  await act(async () => {
-    await fireEvent.click(bubble, { target: { check: true } });
+  it("Сортировка массива из 4 элементов пузырьком", async () => {
+    jest.useFakeTimers();
+    const sort = render(<Test testArray={testingObj} />);
+
+    const bubble: HTMLInputElement = screen.getByTestId("bubble");
+    const sortUp: HTMLButtonElement = screen.getByTestId("sort-up");
+
+    fireEvent.click(bubble, { target: { check: true } });
+    fireEvent.click(sortUp);
+    jest.advanceTimersByTime(1000);
+    const column0 = screen.queryByTestId("Column_0");
+    const column1 = screen.queryByTestId("Column_1");
+    const column2 = screen.queryByTestId("Column_2");
+    const column3 = screen.queryByTestId("Column_3");
+    await waitFor(() => {
+      expect(column0?.textContent).toBe("3");
+    });
+    await waitFor(() => {
+      expect(column1?.textContent).toBe("21");
+    });
+    await waitFor(() => {
+      expect(column2?.textContent).toBe("75");
+    });
+    await waitFor(() => {
+      expect(column3?.textContent).toBe("99");
+    });
   });
 
-  await act(async () => {
-    await fireEvent.click(sortUp);
+  it("Сортировка массива из одного элемента пузырьком", async () => {
+    jest.useFakeTimers();
+    const sort = render(<Test testArray={testingObjOne} />);
+    const bubble: HTMLInputElement = screen.getByTestId("bubble");
+    const sortUp: HTMLButtonElement = screen.getByTestId("sort-up");
+    fireEvent.click(bubble, { target: { check: true } });
+    fireEvent.click(sortUp);
+    jest.advanceTimersByTime(1000);
+    const column0 = screen.queryByTestId("Column_0");
+    await waitFor(() => {
+      expect(column0?.textContent).toBe("99");
+    });
   });
-  // fireEvent.click(sortDown);
 
-  // console.log(check.checked);
-  // console.log(bubble.checked);
-  await act(async () => {
-    await jest.advanceTimersByTime(10000);
+  it("Сортировка массива из одного элемента выбором", async () => {
+    jest.useFakeTimers();
+    const sort = render(<Test testArray={testingObjOne} />);
+    const check: HTMLInputElement = screen.getByTestId("check");
+
+    const sortUp: HTMLButtonElement = screen.getByTestId("sort-up");
+    fireEvent.click(check, { target: { check: true } });
+    fireEvent.click(sortUp);
+    jest.advanceTimersByTime(1000);
+    const column0 = screen.queryByTestId("Column_0");
+    await waitFor(() => {
+      expect(column0?.textContent).toBe("99");
+    });
   });
-  // act(() => jest.advanceTimersByTime(1000));
 
-  const column = await screen.queryByTestId("Column_0");
+  it("Сортировка пустого массива", async () => {
+    jest.useFakeTimers();
+    const sort = render(<Test testArray={zeroObj} />);
+    const check: HTMLInputElement = screen.getByTestId("check");
 
-  console.log(column?.textContent);
-  expect(column?.textContent).toBe("3");
+    const sortUp: HTMLButtonElement = screen.getByTestId("sort-up");
+    fireEvent.click(check, { target: { check: true } });
+    fireEvent.click(sortUp);
+    jest.advanceTimersByTime(1000);
+    const column0 = screen.queryByTestId("Column_0");
+    await waitFor(() => {
+      expect(column0?.textContent).toBe(undefined);
+    });
+  });
 });

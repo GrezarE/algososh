@@ -1,9 +1,13 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import { StringPage } from "./string";
 import { ElementStates } from "../../types/element-states";
-// import { act } from "react-test-renderer";
-import ReactDOM from "react-dom";
 
 // describe("Алгоритм разворота строки", () => {
 //   const stringTest = (
@@ -34,9 +38,7 @@ import ReactDOM from "react-dom";
 
 it("Test", async () => {
   jest.useFakeTimers();
-  await act(async () => {
-    render(<StringPage />);
-  });
+  render(<StringPage />);
   const button: HTMLButtonElement = screen.getByTestId("button");
   const input: HTMLInputElement = screen.getByTestId("input");
   fireEvent.change(input, { target: { value: "1234567" } });
@@ -44,6 +46,13 @@ it("Test", async () => {
   fireEvent.click(button);
 
   jest.advanceTimersByTime(5000);
+  const circle = screen.queryByTestId("Circle_0");
+  const circle1 = screen.queryByTestId("Circle_4");
 
-  expect(screen.getByTestId("Circle_0").textContent).toBe("7");
+  await waitFor(() => {
+    expect(circle?.textContent).toBe("7");
+  });
+  await waitFor(() => {
+    expect(circle1?.textContent).toBe("3");
+  });
 });
