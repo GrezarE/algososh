@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Деактивированная кнопка 1`] = `
+exports[`Кнопка Деактивированная кнопка 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -81,7 +81,7 @@ Object {
 }
 `;
 
-exports[`Кнопка без текста 1`] = `
+exports[`Кнопка Кнопка без текста 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -160,7 +160,7 @@ Object {
 }
 `;
 
-exports[`Кнопка с индикацией загрузки 1`] = `
+exports[`Кнопка Кнопка с индикацией загрузки 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -245,7 +245,7 @@ Object {
 }
 `;
 
-exports[`Кнопка с текстом 1`] = `
+exports[`Кнопка Кнопка с текстом 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>

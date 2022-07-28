@@ -98,9 +98,9 @@ export const StringPage = () => {
     }
   }, [inputText]);
 
-  useEffect(() => {
-    console.log(result);
-  }, [result]);
+  // useEffect(() => {
+  //   console.log(result);
+  // }, [result]);
 
   return (
     <>

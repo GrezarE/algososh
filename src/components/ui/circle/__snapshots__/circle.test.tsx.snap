@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Круг c tail 1`] = `
+exports[`Круг Круг c tail 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -107,7 +107,7 @@ Object {
 }
 `;
 
-exports[`Круг react-элементом в head 1`] = `
+exports[`Круг Круг react-элементом в head 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -214,7 +214,7 @@ Object {
 }
 `;
 
-exports[`Круг react-элементом в tail 1`] = `
+exports[`Круг Круг react-элементом в tail 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -321,7 +321,7 @@ Object {
 }
 `;
 
-exports[`Круг без буквы 1`] = `
+exports[`Круг Круг без буквы 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -424,7 +424,7 @@ Object {
 }
 `;
 
-exports[`Круг в состоянии базовом 1`] = `
+exports[`Круг Круг в состоянии базовом 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -527,7 +527,7 @@ Object {
 }
 `;
 
-exports[`Круг в состоянии изменяемом 1`] = `
+exports[`Круг Круг в состоянии изменяемом 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -630,7 +630,7 @@ Object {
 }
 `;
 
-exports[`Круг в состоянии изменённом 1`] = `
+exports[`Круг Круг в состоянии изменённом 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -733,7 +733,7 @@ Object {
 }
 `;
 
-exports[`Круг с head 1`] = `
+exports[`Круг Круг с head 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -840,7 +840,7 @@ Object {
 }
 `;
 
-exports[`Круг с index 1`] = `
+exports[`Круг Круг с index 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -947,7 +947,7 @@ Object {
 }
 `;
 
-exports[`Круг с буквами 1`] = `
+exports[`Круг Круг с буквами 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
@@ -1054,7 +1054,7 @@ Object {
 }
 `;
 
-exports[`Маленький круг 1`] = `
+exports[`Круг Маленький круг 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
