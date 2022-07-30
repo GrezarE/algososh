@@ -21,7 +21,7 @@ const Test = ({ testArray }: any) => {
   const [randomArray, setRandomArray] = useState<IRandomObj[] | undefined>(
     testArray
   );
-
+  
   const createRandomArr = (obj: any) => {
     setRandomArray(obj);
   };
