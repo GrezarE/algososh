@@ -1,19 +1,13 @@
-import { wait } from "@testing-library/user-event/dist/utils";
+import { emptyInput, openPage } from "../utils.cy";
 
 describe("Роутинг", function () {
   before(function () {
     cy.visit("http://localhost:3000");
   });
 
-  it("Открываем страницу Строки", function () {
-    cy.get('a[href*="recursion"]').click();
-    cy.contains("Строка");
-  });
-
-  it("При пустом инпуте кнопка неактивна", () => {
-    cy.get("input").should("be.empty");
-    cy.get("button").should("be.disabled");
-  });
+  openPage('Строки', "recursion", "Строка")
+  
+  emptyInput();
 
   it("Кнопка активируется при вводе в инпут", () => {
     cy.get("input").type("12345");
@@ -48,69 +42,47 @@ describe("Роутинг", function () {
       .eq(4)
       .find("[class^=circle_circle]")
       .as("fifth-circle");
-    cy.get("@first-circle").should(
-      "have.css",
-      "border",
-      "4px solid rgb(210, 82, 225)"
-    );
-    cy.get("@fifth-circle").should(
-      "have.css",
-      "border",
-      "4px solid rgb(210, 82, 225)"
-    );
+    cy.get("@first-circle")
+      .should("have.css", "border", "4px solid rgb(210, 82, 225)")
+      .contains("1");
+    cy.get("@fifth-circle")
+      .should("have.css", "border", "4px solid rgb(210, 82, 225)")
+      .contains("5");
 
-    wait(500);
+    cy.wait(500);
 
-    cy.get("@first-circle").should(
-      "have.css",
-      "border",
-      "4px solid rgb(127, 224, 81)"
-    );
-    cy.get("@second-circle").should(
-      "have.css",
-      "border",
-      "4px solid rgb(210, 82, 225)"
-    );
-    cy.get("@third-circle").should(
-      "have.css",
-      "border",
-      "4px solid rgb(0, 50, 255)"
-    );
-    cy.get("@fourth-circle").should(
-      "have.css",
-      "border",
-      "4px solid rgb(210, 82, 225)"
-    );
-    cy.get("@fifth-circle").should(
-      "have.css",
-      "border",
-      "4px solid rgb(127, 224, 81)"
-    );
+    cy.get("@first-circle")
+      .should("have.css", "border", "4px solid rgb(127, 224, 81)")
+      .contains("5");
+    cy.get("@second-circle")
+      .should("have.css", "border", "4px solid rgb(210, 82, 225)")
+      .contains("2");
+    cy.get("@third-circle")
+      .should("have.css", "border", "4px solid rgb(0, 50, 255)")
+      .contains("3");
+    cy.get("@fourth-circle")
+      .should("have.css", "border", "4px solid rgb(210, 82, 225)")
+      .contains("4");
+    cy.get("@fifth-circle")
+      .should("have.css", "border", "4px solid rgb(127, 224, 81)")
+      .contains("1");
 
-    wait(500);
+    cy.wait(500);
 
-    cy.get("@second-circle").should(
-      "have.css",
-      "border",
-      "4px solid rgb(127, 224, 81)"
-    );
-    cy.get("@third-circle").should(
-      "have.css",
-      "border",
-      "4px solid rgb(210, 82, 225)"
-    );
-    cy.get("@fourth-circle").should(
-      "have.css",
-      "border",
-      "4px solid rgb(127, 224, 81)"
-    );
+    cy.get("@second-circle")
+      .should("have.css", "border", "4px solid rgb(127, 224, 81)")
+      .contains("4");
+    cy.get("@third-circle")
+      .should("have.css", "border", "4px solid rgb(210, 82, 225)")
+      .contains("3");
+    cy.get("@fourth-circle")
+      .should("have.css", "border", "4px solid rgb(127, 224, 81)")
+      .contains("2");
 
-    wait(500);
+    cy.wait(500);
 
-    cy.get("@third-circle").should(
-      "have.css",
-      "border",
-      "4px solid rgb(127, 224, 81)"
-    );
+    cy.get("@third-circle")
+      .should("have.css", "border", "4px solid rgb(127, 224, 81)")
+      .contains("3");
   });
 });
