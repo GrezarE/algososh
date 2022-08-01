@@ -1,4 +1,4 @@
-const backButton = () => {
+export const backButton = () => {
   it("Возвращаемся на главную страницу", () => {
     cy.wait(500);
     cy.get("button").contains("К оглавлению").click();

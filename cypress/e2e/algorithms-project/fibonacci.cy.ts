@@ -1,13 +1,13 @@
 import { emptyInput, openPage } from "../utils.cy";
 
-describe("", () => {
+describe("Проверки страницы Фибоначчи", () => {
   before(() => {
     cy.visit("http://localhost:3000");
   });
 
   openPage("Фибоначчи", "fibonacci", "Последовательность Фибоначчи");
 
-  emptyInput();
+  emptyInput("Развернуть");
 
   it("Кнопка активируется при вводе в инпут", () => {
     cy.get("input").type("5");

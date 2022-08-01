@@ -1,7 +1,7 @@
-export const emptyInput = () => {
+export const emptyInput = (button: string) => {
   it("При пустом инпуте кнопка неактивна", () => {
     cy.get("input").should("be.empty");
-    cy.get("button").should("be.disabled");
+    cy.contains(button).should("be.disabled");
   });
 };
 

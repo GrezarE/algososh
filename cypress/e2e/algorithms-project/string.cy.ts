@@ -1,13 +1,13 @@
 import { emptyInput, openPage } from "../utils.cy";
 
-describe("Роутинг", function () {
+describe("Проверки страницы Строка", function () {
   before(function () {
     cy.visit("http://localhost:3000");
   });
 
-  openPage('Строки', "recursion", "Строка")
-  
-  emptyInput();
+  openPage("Строки", "recursion", "Строка");
+
+  emptyInput("Развернуть");
 
   it("Кнопка активируется при вводе в инпут", () => {
     cy.get("input").type("12345");
