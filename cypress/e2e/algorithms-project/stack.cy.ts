@@ -4,7 +4,6 @@ const addStack = (input: string, eq: number) => {
   it("Добавляем элемент", () => {
     cy.get("input").type(input);
     cy.get("button").contains("Добавить").should("not.be.disabled").click();
-    // cy.get("button").contains("Добавить").click();
     cy.get("[class^=stack-page_circles__box]").as("circles");
     cy.get("@circles")
       .find("[class^=circle_content]")
@@ -23,7 +22,7 @@ const addStack = (input: string, eq: number) => {
   });
 };
 
-describe("", () => {
+describe("Стэк", () => {
   before(function () {
     cy.visit("http://localhost:3000");
   });
@@ -34,16 +33,16 @@ describe("", () => {
 
   addStack("123", 0);
 
-  addStack("345", 1);
-  addStack("678", 2);
-  addStack("90", 3);
+  addStack("456", 1);
+  addStack("789", 2);
+  addStack("000", 3);
 
   it("Удаление элемента", () => {
     cy.get("[class^=stack-page_circles__box]").as("circles");
-    cy.get("@circles").find("[class^=circle_content]").last().contains("90");
+    cy.get("@circles").find("[class^=circle_content]").last().contains("000");
     cy.get("button").contains("Удалить").should("not.be.disabled").click();
     cy.wait(500);
-    cy.get("@circles").find("[class^=circle_content]").last().contains("678");
+    cy.get("@circles").find("[class^=circle_content]").last().contains("789");
   });
 
   it("Удаление всех элементов", () => {
