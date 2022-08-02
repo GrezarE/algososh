@@ -116,15 +116,6 @@ export const StackPage: React.FC = () => {
         />
       </form>
       <div className={styles.circles__box}>
-        {/* {result &&
-          result.map((item: string, index: number) => (
-            <Circle
-              letter={item}
-              key={index}
-              head={index === result.length - 1 ? "top" : ""}
-              state={index === result.length - 1 ? color : undefined}
-            />
-          ))} */}
         {stackRef &&
           stackRef.current
             .getElements()
