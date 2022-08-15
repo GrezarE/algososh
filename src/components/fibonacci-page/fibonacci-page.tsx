@@ -1,4 +1,9 @@
-import React, { useState, ChangeEventHandler, FormEventHandler, useEffect } from "react";
+import React, {
+  useState,
+  ChangeEventHandler,
+  FormEventHandler,
+  useEffect,
+} from "react";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
 import { Button } from "../ui/button/button";
@@ -10,7 +15,7 @@ export const FibonacciPage: React.FC = () => {
   const [inputText, changeInputText] = useState<any>();
   const [result, setResult] = useState<number[]>();
   const [isLoader, setIsLoader] = useState<boolean>(false);
-  const [buttonDisabled, setButtonDisabled] = useState(false)
+  const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const fibonacci = (n: number) => {
     let fibonacciArr = [0, 1];
@@ -43,18 +48,23 @@ export const FibonacciPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (inputText >= 20) {
-      setButtonDisabled(true)
+    if (inputText < 20 && inputText) {
+      setButtonDisabled(false);
     } else {
-      setButtonDisabled(false)
+      setButtonDisabled(true);
     }
-  }, [inputText])
+  }, [inputText]);
 
   return (
     <SolutionLayout title="Последовательность Фибоначчи">
       <form className={styles.form__box} onSubmit={onSubmit}>
         <Input isLimitText={true} onChange={onChange} type="number" max={19} />
-        <Button text="Развернуть" type="submit" isLoader={isLoader} disabled={buttonDisabled}/>
+        <Button
+          text="Развернуть"
+          type="submit"
+          isLoader={isLoader}
+          disabled={buttonDisabled}
+        />
       </form>
       <div
         className={

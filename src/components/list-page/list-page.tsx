@@ -303,6 +303,8 @@ export const ListPage: React.FC = () => {
     }
   }, [valueInput]);
 
+  
+
   return (
     <SolutionLayout title="Связный список">
       <form className={styles.form__box} ref={refValue}>
