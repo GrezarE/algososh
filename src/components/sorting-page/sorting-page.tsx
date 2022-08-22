@@ -6,14 +6,15 @@ import { Column } from "../ui/column/column";
 import { ElementStates } from "../../types/element-states";
 import { Direction } from "../../types/direction";
 import styles from "./sorting-page.module.css";
+import { arrLength, createRandom } from "../../utils/utils";
 
 interface IRandomObj {
   number: number;
   color: ElementStates;
 }
 
-export const SortingPage: React.FC = () => {
-  const [randomArray, setRandomArray] = useState<IRandomObj[]>();
+export const SortingArray = (props: any) => {
+  const { randomArray, setRandomArray, createRandomArr } = props;
   const [checked, setChecked] = useState("check");
   const [createButton, setCreateButton] = useState({
     isLoader: false,
@@ -28,17 +29,6 @@ export const SortingPage: React.FC = () => {
     disabled: false,
   });
 
-  const createRandomArr = () => {
-    const arrLength = Math.floor(Math.random() * (17 - 3) + 3);
-    const rArray = Array.from({ length: arrLength }, () =>
-      Math.floor(Math.random() * 100)
-    );
-    const rObj = rArray.map((item) => {
-      return { color: ElementStates.Default, number: item };
-    });
-    setRandomArray(rObj);
-  };
-
   const bubbleSort = async (arr: IRandomObj[], simbol: string) => {
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < arr.length - 1 - i; j++) {
@@ -48,7 +38,7 @@ export const SortingPage: React.FC = () => {
         await new Promise((resolve: any) =>
           setTimeout(() => {
             resolve();
-          }, 250)
+          }, 500)
         );
         if (simbol === "Ascending") {
           if (arr[j].number > arr[j + 1].number) {
@@ -107,7 +97,6 @@ export const SortingPage: React.FC = () => {
       arr[i].color = ElementStates.Modified;
       setRandomArray([...arr]);
     }
-    console.log(arr);
   };
 
   const onSortAscending = async () => {
@@ -148,16 +137,13 @@ export const SortingPage: React.FC = () => {
       setCreateButton({ ...createButton, disabled: false });
     }
   };
+
   const onChangeRadio = (value: string) => {
     setChecked(value);
   };
 
-  useEffect(() => {
-    createRandomArr();
-  }, []);
-
   return (
-    <SolutionLayout title="Сортировка массива">
+    <>
       <div className={styles.box}>
         <form className={styles.form__box}>
           <RadioInput
@@ -166,12 +152,14 @@ export const SortingPage: React.FC = () => {
             value="check"
             onChange={() => onChangeRadio("check")}
             defaultChecked
+            data-testid={"check"}
           />
           <RadioInput
             label="Пузырёк"
             name="sort"
             value="bubble"
             onChange={() => onChangeRadio("bubble")}
+            data-testid={"bubble"}
           />
         </form>
         <div className={styles.buttons__box}>
@@ -182,6 +170,7 @@ export const SortingPage: React.FC = () => {
             onClick={onSortAscending}
             disabled={ascendingButton.disabled}
             isLoader={ascendingButton.isLoader}
+            data-testid={"sort-up"}
           />
           <Button
             text="По убыванию"
@@ -190,22 +179,50 @@ export const SortingPage: React.FC = () => {
             onClick={onSortDescending}
             disabled={descendingButton.disabled}
             isLoader={descendingButton.isLoader}
+            data-testid={"sort-down"}
           />
         </div>
         <Button
           text="Новый массив"
           style={{ width: 205 }}
-          onClick={createRandomArr}
+          onClick={() => createRandomArr(createRandom(arrLength()))}
           disabled={createButton.disabled}
           isLoader={createButton.isLoader}
         />
       </div>
       <div className={styles.column__box}>
         {randomArray &&
-          randomArray.map((item, index) => (
-            <Column index={item.number} key={index} state={item.color} />
+          randomArray.map((item: any, index: any) => (
+            <Column
+              index={item.number}
+              key={index}
+              state={item.color}
+              data-testid={`Column_${index}`}
+            />
           ))}
       </div>
+    </>
+  );
+};
+
+export const SortingPage: React.FC = () => {
+  const [randomArray, setRandomArray] = useState<IRandomObj[]>();
+
+  const createRandomArr = (obj: any) => {
+    setRandomArray(obj);
+  };
+
+  useEffect(() => {
+    createRandomArr(createRandom(arrLength()));
+  }, []);
+
+  return (
+    <SolutionLayout title="Сортировка массива">
+      <SortingArray
+        randomArray={randomArray}
+        setRandomArray={setRandomArray}
+        createRandomArr={createRandomArr}
+      />
     </SolutionLayout>
   );
 };
